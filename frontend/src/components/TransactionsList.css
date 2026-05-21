@@ -1,0 +1,197 @@
+.transactions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 2rem;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: white;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.search-bar:focus-within {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.search-bar svg {
+  color: #999;
+  flex-shrink: 0;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+}
+
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: #f8f9fa;
+  border-radius: 0.5rem;
+  color: #999;
+}
+
+.table-container {
+  overflow-x: auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.transactions-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.transactions-table thead {
+  background: #f8f9fa;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.transactions-table th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.transactions-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  color: #555;
+}
+
+.transactions-table tbody tr:hover {
+  background: #f8f9fa;
+}
+
+.transactions-table tbody tr.deposit {
+  --row-color: #d4edda;
+}
+
+.transactions-table tbody tr.expense {
+  --row-color: #fff5f5;
+}
+
+.transactions-table tbody tr:hover {
+  background: var(--row-color, #f8f9fa);
+}
+
+.date-col {
+  white-space: nowrap;
+  font-weight: 500;
+  color: #667eea;
+}
+
+.description-col {
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.category-col {
+  background: #f0f4ff;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  color: #667eea;
+  font-weight: 500;
+  width: fit-content;
+}
+
+.amount-col {
+  font-weight: 600;
+  text-align: right;
+  width: 120px;
+}
+
+.amount-col.income {
+  color: #28a745;
+}
+
+.amount-col.expense {
+  color: #dc3545;
+}
+
+.balance-col {
+  text-align: right;
+  width: 120px;
+}
+
+.actions-col {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+  width: 100px;
+}
+
+.action-btn {
+  padding: 0.5rem;
+  border: none;
+  background: #f0f0f0;
+  color: #666;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn:hover {
+  background: #e0e0e0;
+}
+
+.action-btn.delete-btn:hover {
+  background: #dc3545;
+  color: white;
+}
+
+.action-btn.edit-btn:hover {
+  background: #667eea;
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .table-container {
+    font-size: 0.875rem;
+  }
+
+  .transactions-table th,
+  .transactions-table td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .description-col {
+    max-width: 100px;
+  }
+
+  .amount-col,
+  .balance-col {
+    width: 100px;
+  }
+
+  .actions-col {
+    width: 80px;
+  }
+}
