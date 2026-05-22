@@ -213,7 +213,7 @@ async def get_category_breakdown(
 async def get_spending_trend(
     start: str = Query(..., description="Start date (ISO format)"),
     end: str = Query(..., description="End date (ISO format)"),
-    granularity: str = Query("daily", regex="^(daily|weekly|monthly)$"),
+    granularity: str = Query("daily", pattern="^(daily|weekly|monthly)$"),
 ):
     """Get spending trend over time"""
     try:
