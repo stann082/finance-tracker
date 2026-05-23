@@ -33,15 +33,6 @@ class TransactionRepository:
             print(f"Error in get_all: {e}")
             return []
     
-    def get_all(self, limit: int = 1000, skip: int = 0) -> List[Dict]:
-        """Get all transactions with pagination"""
-        return list(
-            self.collection.find({})
-            .sort("date", -1)
-            .skip(skip)
-            .limit(limit)
-        )
-    
     def get_by_id(self, transaction_id: str) -> Optional[Dict]:
         """Get transaction by MongoDB ObjectId"""
         try:

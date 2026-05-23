@@ -21,9 +21,24 @@ function startPythonBackend() {
   console.log('Python:', PYTHON_EXECUTABLE);
   console.log('Main:', PYTHON_MAIN);
 
-  pythonProcess = spawn(PYTHON_EXECUTABLE, ['-u', PYTHON_MAIN], {
+  const backendDir = path.join(__dirname, '../backend');
+  
+  pythonProcess = spawn(PYTHON_EXECUTABLE, [
+    '-m',
+    'uvicorn',
+    'app.main:app',
+    '--host',
+    '127.0.0.1',
+    '--port',
+    '5000',
+    '--reload'
+  ], {
     stdio: 'inherit',
-    cwd: path.join(__dirname, '../backend'),
+    cwd: backendDir,
+    env: {
+      ...process.env,
+      PYTHONPATH: backendDir,
+    },
   });
 
   pythonProcess.on('error', (err) => {

@@ -251,11 +251,11 @@ async def get_recurring_transactions():
 @app.on_event("startup")
 async def startup_event():
     """Initialize MongoDB connection on startup"""
-    print("🚀 Starting Finance Tracker API...")
+    print("[STARTUP] Starting Finance Tracker API...")
     if mongo_connection.connect():
-        print("✓ API ready")
+        print("[OK] API ready")
     else:
-        print("✗ Failed to connect to MongoDB - API will have limited functionality")
+        print("[ERROR] Failed to connect to MongoDB - API will have limited functionality")
 
 
 @app.on_event("shutdown")

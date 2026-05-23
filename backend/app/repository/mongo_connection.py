@@ -22,9 +22,9 @@ with open(env_path) as f:
 DATABASE_NAME = os.getenv("DATABASE_NAME", "financial_data")
 COLLECTION_NAME = os.getenv("COLLECTION_NAME", "transactions")
 
-print(f"✓ MONGODB_URI: {MONGODB_URI}")
-print(f"✓ DATABASE_NAME: {DATABASE_NAME}")
-print(f"✓ COLLECTION_NAME: {COLLECTION_NAME}")
+print(f"[OK] MONGODB_URI: {MONGODB_URI}")
+print(f"[OK] DATABASE_NAME: {DATABASE_NAME}")
+print(f"[OK] COLLECTION_NAME: {COLLECTION_NAME}")
 
 
 class MongoDBConnection:
@@ -49,10 +49,10 @@ class MongoDBConnection:
             self.client.server_info()
             self.db = self.client[DATABASE_NAME]
             self._connected = True
-            print(f"✓ Connected to MongoDB: {DATABASE_NAME}")
+            print(f"[OK] Connected to MongoDB: {DATABASE_NAME}")
             return True
         except (ServerSelectionTimeoutError, Exception) as e:
-            print(f"⚠ Warning: MongoDB connection failed: {e}")
+            print(f"[WARNING] MongoDB connection failed: {e}")
             print(f"  URI: {MONGODB_URI}")
             print(f"  API will start but database operations will fail until MongoDB is available")
             # Don't fail - allow app to start
@@ -75,7 +75,7 @@ class MongoDBConnection:
         """Close MongoDB connection"""
         if self.client:
             self.client.close()
-            print("✓ MongoDB connection closed")
+            print("[OK] MongoDB connection closed")
 
 
 # Global connection instance

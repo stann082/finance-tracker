@@ -69,21 +69,21 @@ export default function Dashboard({ startDate, endDate, loading = false }: Dashb
       <div className="summary-cards">
         <div className="card">
           <h3>Total Income</h3>
-          <p className="amount income">{summary && formatCurrency(summary.total_income)}</p>
+          <p className="amount income">{summary?.total_income ? formatCurrency(summary.total_income) : '-'}</p>
         </div>
         <div className="card">
           <h3>Total Spent</h3>
-          <p className="amount expense">{summary && formatCurrency(summary.total_spent)}</p>
+          <p className="amount expense">{summary?.total_spent ? formatCurrency(summary.total_spent) : '-'}</p>
         </div>
         <div className="card">
           <h3>Net</h3>
-          <p className={`amount ${summary && summary.net >= 0 ? 'income' : 'expense'}`}>
-            {summary && formatCurrency(summary.net)}
+          <p className={`amount ${(summary?.net ?? 0) >= 0 ? 'income' : 'expense'}`}>
+            {summary?.net !== undefined ? formatCurrency(summary.net) : '-'}
           </p>
         </div>
         <div className="card">
           <h3>Avg Transaction</h3>
-          <p className="amount">{summary && formatCurrency(summary.avg_transaction)}</p>
+          <p className="amount">{summary?.avg_transaction ? formatCurrency(summary.avg_transaction) : '-'}</p>
         </div>
       </div>
 
