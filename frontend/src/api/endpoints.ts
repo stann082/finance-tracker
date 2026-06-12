@@ -1,5 +1,5 @@
 import apiClient from '../api/client';
-import { SummaryStats, SpendingTrend, CategoryBreakdown } from '../types';
+import type { SummaryStats, SpendingTrend, CategoryBreakdown } from '../types';
 
 export const transactionApi = {
   getAll: (limit = 100, skip = 0) =>

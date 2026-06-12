@@ -72,6 +72,10 @@ function createWindow() {
     ? 'http://localhost:5173'  // Vite dev server
     : `file://${path.join(__dirname, '../frontend/dist/index.html')}`;
 
+  if (isDev) {
+    mainWindow.webContents.session.clearCache();
+  }
+
   mainWindow.loadURL(startUrl);
 
   if (isDev) {

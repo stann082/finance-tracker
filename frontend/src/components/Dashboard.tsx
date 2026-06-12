@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { statsApi, transactionApi } from '../api/endpoints';
 import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { SummaryStats, SpendingTrend, CategoryBreakdown } from '../types';
+import type { SummaryStats, SpendingTrend, CategoryBreakdown } from '../types';
 import './Dashboard.css';
 
 interface DashboardProps {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { transactionApi } from '../api/endpoints';
-import { Transaction } from '../types';
+import type { Transaction } from '../types';
 import { Search, Trash2, Edit2 } from 'lucide-react';
 import './TransactionsList.css';
 

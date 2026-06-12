@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import apiClient from '../api/client';
-import { Transaction } from '../types';
+import type { Transaction } from '../types';
 
 export function useTransactions(limit: number = 100, skip: number = 0) {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
