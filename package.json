@@ -10,8 +10,38 @@
     "dev:electron": "wait-on http://localhost:5173 && electron .",
     "build": "npm run build:frontend && npm run build:electron",
     "build:frontend": "cd frontend && npm run build",
-    "build:electron": "electron-builder",
+    "build:backend": "cd backend && venv\\Scripts\\python.exe -m PyInstaller --noconfirm finance_tracker_backend.spec",
+    "build:electron": "electron-builder --win",
+    "deploy": "npm run build:frontend && npm run build:backend && npm run build:electron",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "build": {
+    "appId": "com.financetracker.desktop",
+    "productName": "Finance Tracker",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "electron/**/*",
+      "frontend/dist/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "backend/dist/finance-tracker-backend",
+        "to": "backend"
+      }
+    ],
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": true,
+      "perMachine": false,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "runAfterFinish": true
+    }
   },
   "keywords": [
     "finance",

@@ -170,7 +170,40 @@ The Electron main process (`electron/main.js`):
 - [ ] Error handling improvements
 - [ ] Database indexing
 - [ ] Unit & integration tests
-- [ ] Windows `.exe` installer (electron-builder)
+- [x] Windows `.exe` installer (electron-builder)
+
+## Deployment (Windows installer)
+
+`npm run deploy` produces a single one-click installer at
+`release/Finance Tracker Setup <version>.exe`. Running it installs the app
+per-user (no admin prompt), creates a **desktop shortcut** and Start Menu entry,
+and launches the app. An uninstaller is registered in Windows Settings.
+
+The build chain is:
+
+1. `build:frontend` — Vite production build (`frontend/dist`)
+2. `build:backend` — PyInstaller compiles the FastAPI backend into a
+   self-contained `backend/dist/finance-tracker-backend/` bundle (no Python
+   needed on the target machine)
+3. `build:electron` — electron-builder packages everything into the NSIS
+   installer, embedding the backend bundle under `resources/backend`
+
+One-time setup before the first build:
+
+```bash
+cd backend
+venv\Scripts\activate
+pip install -r requirements-build.txt   # installs runtime deps + PyInstaller
+```
+
+Notes:
+- The target machine still needs MongoDB (local service on `localhost:27017`
+  by default). To point the installed app at a different instance, set the
+  `MONGODB_URI` environment variable, or place a `.env` file next to
+  `finance-tracker-backend.exe` in the install's `resources/backend` folder.
+- The installer is unsigned, so Windows SmartScreen may warn on first run.
+- No app icon is configured yet; electron-builder falls back to the default
+  Electron icon (add `build.win.icon` in `package.json` to customize).
 
 ## Troubleshooting
 

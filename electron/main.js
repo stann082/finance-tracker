@@ -1,45 +1,50 @@
 const { app, BrowserWindow, Menu } = require('electron');
 const isDev = require('electron-is-dev');
 const path = require('path');
+const http = require('http');
 const spawn = require('child_process').spawn;
 
 let mainWindow;
 let pythonProcess;
 
-// Python backend configuration
-const PYTHON_EXECUTABLE = isDev 
-  ? path.join(__dirname, '../backend/venv/Scripts/python.exe')
-  : path.join(process.resourcesPath, 'backend/venv/Scripts/python.exe');
-
-const PYTHON_MAIN = isDev
-  ? path.join(__dirname, '../backend/app/main.py')
-  : path.join(process.resourcesPath, 'backend/app/main.py');
+const BACKEND_PORT = 5000;
 
 // Start Python backend
 function startPythonBackend() {
   console.log('Starting Python backend...');
-  console.log('Python:', PYTHON_EXECUTABLE);
-  console.log('Main:', PYTHON_MAIN);
 
-  const backendDir = path.join(__dirname, '../backend');
-  
-  pythonProcess = spawn(PYTHON_EXECUTABLE, [
-    '-m',
-    'uvicorn',
-    'app.main:app',
-    '--host',
-    '127.0.0.1',
-    '--port',
-    '5000',
-    '--reload'
-  ], {
-    stdio: 'inherit',
-    cwd: backendDir,
-    env: {
-      ...process.env,
-      PYTHONPATH: backendDir,
-    },
-  });
+  if (isDev) {
+    const backendDir = path.join(__dirname, '../backend');
+    pythonProcess = spawn(path.join(backendDir, 'venv/Scripts/python.exe'), [
+      '-m',
+      'uvicorn',
+      'app.main:app',
+      '--host',
+      '127.0.0.1',
+      '--port',
+      String(BACKEND_PORT),
+      '--reload'
+    ], {
+      stdio: 'inherit',
+      cwd: backendDir,
+      env: {
+        ...process.env,
+        PYTHONPATH: backendDir,
+      },
+    });
+  } else {
+    // Packaged app: backend is a PyInstaller bundle under resources/backend
+    const backendExe = path.join(process.resourcesPath, 'backend', 'finance-tracker-backend.exe');
+    pythonProcess = spawn(backendExe, [], {
+      stdio: 'ignore',
+      cwd: path.dirname(backendExe),
+      windowsHide: true,
+      env: {
+        ...process.env,
+        API_PORT: String(BACKEND_PORT),
+      },
+    });
+  }
 
   pythonProcess.on('error', (err) => {
     console.error('Failed to start Python backend:', err);
@@ -49,9 +54,34 @@ function startPythonBackend() {
     console.log(`Python process exited with code ${code}`);
   });
 
-  // Give backend time to start
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(), 2000);
+  return waitForBackend();
+}
+
+// Poll the health endpoint until the backend is accepting requests.
+// The packaged backend can take several seconds to start (pandas/sklearn imports).
+function waitForBackend(timeoutMs = 30000) {
+  const deadline = Date.now() + timeoutMs;
+  return new Promise((resolve, reject) => {
+    const attempt = () => {
+      const req = http.get(`http://127.0.0.1:${BACKEND_PORT}/health`, (res) => {
+        res.resume();
+        if (res.statusCode === 200) {
+          resolve();
+        } else {
+          retry();
+        }
+      });
+      req.setTimeout(1000, () => req.destroy(new Error('timeout')));
+      req.on('error', retry);
+    };
+    const retry = () => {
+      if (Date.now() > deadline) {
+        reject(new Error(`Backend did not respond on port ${BACKEND_PORT} within ${timeoutMs}ms`));
+        return;
+      }
+      setTimeout(attempt, 500);
+    };
+    attempt();
   });
 }
 

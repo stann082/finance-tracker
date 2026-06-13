@@ -1,0 +1,4 @@
+# Build-time dependencies for packaging the backend into an executable.
+# Install with: pip install -r requirements-build.txt
+-r requirements.txt
+pyinstaller>=6.10,<7
