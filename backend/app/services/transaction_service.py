@@ -89,20 +89,21 @@ class TransactionService:
         """Convert MongoDB document to TransactionResponse"""
         if not transaction:
             return None
-        
-        amount = transaction.get('amount', 0)
+
+        amount = float(transaction.get('Amount', transaction.get('amount', 0)) or 0)
+        balance = float(transaction.get('Balance', transaction.get('balance', 0)) or 0)
         is_deposit = amount >= 0
         tx_type = TransactionType.CREDIT if is_deposit else TransactionType.DEBIT
-        
+
         return TransactionResponse(
             id=str(transaction.get('_id', '')),
             amount=amount,
-            balance=transaction.get('balance', 0),
-            category=transaction.get('category'),
-            date=transaction.get('date', datetime.now()),
-            description=transaction.get('description'),
+            balance=balance,
+            category=transaction.get('Category', transaction.get('category')),
+            date=transaction.get('Date', transaction.get('date', datetime.now())),
+            description=transaction.get('Description', transaction.get('description')),
             is_deposit=is_deposit,
-            is_recurring=transaction.get('is_recurring', False),
-            transaction_id=transaction.get('transaction_id'),
+            is_recurring=transaction.get('IsRecurring', transaction.get('is_recurring', False)),
+            transaction_id=transaction.get('TransactionId', transaction.get('transaction_id')),
             type=tx_type,
         )
