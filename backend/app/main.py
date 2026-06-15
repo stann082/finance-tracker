@@ -73,20 +73,6 @@ async def get_transactions(limit: int = Query(100, ge=1, le=1000), skip: int = Q
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.get("/api/transactions/{transaction_id}", response_model=TransactionResponse)
-async def get_transaction(transaction_id: str):
-    """Get single transaction by ID"""
-    try:
-        transaction = get_transaction_service().get_transaction(transaction_id)
-        if not transaction:
-            raise HTTPException(status_code=404, detail="Transaction not found")
-        return transaction
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-
 @app.get("/api/transactions/search", response_model=List[TransactionResponse])
 async def search_transactions(
     query: str = Query(..., min_length=1),
@@ -122,6 +108,20 @@ async def get_by_pay_period(month: str = Query(..., description="Month in format
     """Get transactions by pay period (month)"""
     try:
         return get_transaction_service().get_by_pay_period(month)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/transactions/{transaction_id}", response_model=TransactionResponse)
+async def get_transaction(transaction_id: str):
+    """Get single transaction by ID"""
+    try:
+        transaction = get_transaction_service().get_transaction(transaction_id)
+        if not transaction:
+            raise HTTPException(status_code=404, detail="Transaction not found")
+        return transaction
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

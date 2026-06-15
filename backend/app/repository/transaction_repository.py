@@ -25,7 +25,7 @@ class TransactionRepository:
             collection = self._get_collection()
             return list(
                 collection.find({})
-                .sort("date", -1)
+                .sort("Date", -1)
                 .skip(skip)
                 .limit(limit)
             )
@@ -50,11 +50,11 @@ class TransactionRepository:
         """Get transactions within date range"""
         try:
             query = {
-                "date": {"$gte": start_date, "$lt": end_date}
+                "Date": {"$gte": start_date, "$lt": end_date}
             }
             return list(
                 self._get_collection().find(query)
-                .sort("date", -1)
+                .sort("Date", -1)
                 .skip(skip)
                 .limit(limit)
             )
@@ -72,13 +72,13 @@ class TransactionRepository:
         try:
             search_query = {
                 "$or": [
-                    {"description": {"$regex": query, "$options": "i"}},
-                    {"category": {"$regex": query, "$options": "i"}},
+                    {"Description": {"$regex": query, "$options": "i"}},
+                    {"Category": {"$regex": query, "$options": "i"}},
                 ]
             }
             return list(
                 self._get_collection().find(search_query)
-                .sort("date", -1)
+                .sort("Date", -1)
                 .skip(skip)
                 .limit(limit)
             )
@@ -94,10 +94,10 @@ class TransactionRepository:
     ) -> List[Dict]:
         """Get transactions by category"""
         try:
-            query = {"category": category}
+            query = {"Category": category}
             return list(
                 self._get_collection().find(query)
-                .sort("date", -1)
+                .sort("Date", -1)
                 .skip(skip)
                 .limit(limit)
             )
@@ -108,10 +108,10 @@ class TransactionRepository:
     def get_recurring(self) -> List[Dict]:
         """Get all transactions marked as recurring"""
         try:
-            query = {"is_recurring": True}
+            query = {"IsRecurring": True}
             return list(
                 self._get_collection().find(query)
-                .sort("date", -1)
+                .sort("Date", -1)
             )
         except Exception as e:
             print(f"Error in get_recurring: {e}")
@@ -150,7 +150,7 @@ class TransactionRepository:
     def get_categories(self) -> List[str]:
         """Get list of unique categories"""
         try:
-            return self._get_collection().distinct("category")
+            return self._get_collection().distinct("Category")
         except Exception as e:
             print(f"Error in get_categories: {e}")
             return []

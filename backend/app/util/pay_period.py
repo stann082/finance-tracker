@@ -52,7 +52,7 @@ class PayPeriodCalculator:
         
         for txn in transactions:
             if PayPeriodCalculator._is_paycheck(txn):
-                txn_date = txn['date'] if isinstance(txn['date'], datetime) else txn['date']
+                txn_date = txn.get('Date', txn.get('date'))
                 
                 # Paycheck BEFORE month start (last one before)
                 if txn_date < target_month_start:
@@ -69,7 +69,7 @@ class PayPeriodCalculator:
     @staticmethod
     def _is_paycheck(transaction: dict) -> bool:
         """Check if transaction is a paycheck marker"""
-        description = transaction.get('description', '') or ''
+        description = transaction.get('Description', transaction.get('description', '')) or ''
         return PayPeriodCalculator.PAYCHECK_MARKER in description
 
 
@@ -139,7 +139,7 @@ class PayPeriodTransactionsProvider:
         # Filter transactions in window
         windowed_txns = [
             t for t in all_transactions
-            if window_start <= (t.get('date') or datetime.min) < window_end
+            if window_start <= (t.get('Date', t.get('date')) or datetime.min) < window_end
         ]
         
         # Find pay period boundaries
@@ -154,10 +154,10 @@ class PayPeriodTransactionsProvider:
         # Filter to transactions within pay period
         result = [
             t for t in windowed_txns
-            if period_start <= (t.get('date') or datetime.min) < period_end
+            if period_start <= (t.get('Date', t.get('date')) or datetime.min) < period_end
         ]
-        
-        return sorted(result, key=lambda x: x.get('date', datetime.min))
+
+        return sorted(result, key=lambda x: x.get('Date', x.get('date', datetime.min)))
     
     @staticmethod
     def get_available_pay_periods(all_transactions: List[dict], months_back: int = 12) -> List[str]:
@@ -171,10 +171,10 @@ class PayPeriodTransactionsProvider:
             return []
         
         # Find date range in transactions
-        dates = [t.get('date') for t in all_transactions if t.get('date')]
+        dates = [t.get('Date', t.get('date')) for t in all_transactions if t.get('Date', t.get('date'))]
         if not dates:
             return []
-        
+
         dates = sorted([d for d in dates if isinstance(d, datetime)])
         latest_date = dates[-1]
         
